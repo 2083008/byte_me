@@ -1,5 +1,7 @@
 from math import radians, cos, sin, asin, sqrt
 #http://stackoverflow.com/questions/4913349/haversine-formula-in-python-bearing-and-distance-between-two-gps-points
+
+#returns distance between the coordinates in kilometers
 def haversine(lon1, lat1, lon2, lat2):
     """
     Calculate the great circle distance between two points 
