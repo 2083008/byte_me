@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	{% include 'hackathon/base.html' %}
+
+	<body>
+	<div class="container">
+		{% if user.is_authenticated %}
+        	<h1>Recent Events</h1>
+        	<table class="table table-hover">
+        		<thead>
+        			<th> Location </th>
+        			<th> Incident </th>
+        			<th> Handled? </th>
+        		</thead>
+        		<tbody>
+        			<tr>
+        				<td> G4 </td>
+        				<td> There was a fire and a robbery </td>
+        				<td>
+	        				<button type="button" class="btn btn-success">Success</button>
+	        			</td>
+        			</tr>
+        			<tr>
+        				<td> G19 </td>
+        				<td> There is a cat stuck up a tree </td>
+        				<td>
+	        				<button type="button" class="btn btn-danger">Unhandled</button>
+	        			</td>
+        			</tr>
+        		</tbody>
+        	</table>
+
+        	<!-- for x in entries populate table but for now just create table
+        -->
+        {% else %}
+        	<h1> Please register/login! </h1>
+        {% endif %}
+    </div>
+	</body>
+
+</html>

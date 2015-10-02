@@ -314,6 +314,12 @@ def index(request):
     context = {'hello': 'world'}
     return render(request, 'hackathon/index.html', context)
 
+def test(request):
+
+    #twitter_info = db_name.objects.all()
+    context = {}
+
+    return render(request, "hackathon/test.html", context)
 
 ##################
 #  API Examples  #
