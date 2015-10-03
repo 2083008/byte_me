@@ -34,6 +34,7 @@ class Tweet(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     url = models.CharField(max_length=150)
+    relevancy = models.FloatField()
     event = models.ForeignKey(Event)
 
     def __unicode__(self):
