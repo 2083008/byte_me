@@ -22,7 +22,7 @@ class Event(models.Model):
     postcode = models.CharField(max_length=10)
     event = models.CharField(max_length=200)
     time = models.DateTimeField()
-    occurances = models.IntegerField()
+    occurences = models.IntegerField()
 
     def __unicode__(self):
         return unicode(self.event)

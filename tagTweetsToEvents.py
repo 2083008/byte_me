@@ -132,9 +132,9 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
                 global EVENT_ID
                 EVENT_ID +=1
                 dateTime = convertTime(epochTime)
-                c.execute("INSERT INTO hackathon_event (postcode,body,time,longitude,latitude,event,relevancy,url)VALUES(?,?,?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2,relevancy,url))
+                c.execute("INSERT INTO hackathon_event (id,postcode,event,time,occurences)VALUES(?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2))
                 c.execute("UPDATE hackathon_tweet SET event_id = (?) WHERE body = (?)",(EVENT_ID,mostRelatedTweet))
-                c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID,relevancy,url))
+                c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID,relevancy,url))
                 data.commit()
                 return
     dateTime =convertTime(epochTime)
@@ -169,7 +169,7 @@ def checkEvents(location,tweetBody,epochTime,longitude,latitude, relevancy,url):
     if mostRelatedString !='':
         c.execute("SELECT id from hackathon_event WHERE event = ?",(mostRelatedString,))
         event_id = c.fetchone()
-        c.execute("UPDATE hackathon_event SET occurances = occurances + 1 WHERE id = ?",(event_id))
+        c.execute("UPDATE hackathon_event SET occurences = occurences + 1 WHERE id = ?",(event_id))
         c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,convertTime(epochTime),longitude,latitude,event_id[0],relevancy,url))
         data.commit()
     else:

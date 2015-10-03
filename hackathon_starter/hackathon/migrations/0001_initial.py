@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('postcode', models.CharField(max_length=10)),
                 ('event', models.CharField(max_length=200)),
                 ('time', models.DateTimeField()),
-                ('occurances', models.IntegerField()),
+                ('occurences', models.IntegerField()),
             ],
             options={
             },
@@ -175,6 +175,7 @@ class Migration(migrations.Migration):
                 ('latitude', models.DecimalField(max_digits=9, decimal_places=6)),
                 ('longitude', models.DecimalField(max_digits=9, decimal_places=6)),
                 ('url', models.CharField(max_length=150)),
+                ('relevancy', models.FloatField()),
                 ('event', models.ForeignKey(to='hackathon.Event')),
             ],
             options={
