@@ -99,7 +99,7 @@ def areRelated(string1,string2):
 
 
 #check new tweet against the database of tweets to see if it is trending
-def checkTweets(location,tweetBody,epochTime,longitude,latitude):
+def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
     tweet = splitTweet(tweetBody)
     #Get all tweets from the database
     c.execute("SELECT body from Tweet")
@@ -132,18 +132,18 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude):
                 global EVENT_ID
                 EVENT_ID +=1
                 dateTime = convertTime(epochTime)
-                c.execute("INSERT INTO Event VALUES(?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2))
+                c.execute("INSERT INTO Event (postcode,body,time,longitude,latitude,event,relevancy,url)VALUES(?,?,?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2,relevancy,url))
                 c.execute("UPDATE Tweet SET event = (?) WHERE body = (?)",(EVENT_ID,mostRelatedTweet))
-                c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID))
+                c.execute("INSERT INTO Tweet (postcode,body,time,longitude,latitude,event,relevancy,url) VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID,relevancy,url))
                 data.commit()
                 return
     dateTime =convertTime(epochTime)
-    c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,0))
+    c.execute("INSERT INTO Tweet (postcode,body,time,longitude,latitude,event,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,0,relevancy,url))
     data.commit()
         
                     
 #check new tweet against the database of events to see if it already exists in events
-def checkEvents(location,tweetBody,epochTime,longitude,latitude):
+def checkEvents(location,tweetBody,epochTime,longitude,latitude, relevancy,url):
     tweet = splitTweet(tweetBody)
     #collect all of the events from the database
     c.execute("SELECT event from Event")
@@ -170,19 +170,10 @@ def checkEvents(location,tweetBody,epochTime,longitude,latitude):
         c.execute("SELECT id from Event WHERE event = ?",(mostRelatedString,))
         event_id = c.fetchone()
         c.execute("UPDATE Event SET occurances = occurances + 1 WHERE id = ?",(event_id))
-        c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,convertTime(epochTime),longitude,latitude,event_id[0]))
+        c.execute("INSERT INTO Tweet (postcode,body,time,longitude,latitude,event,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,convertTime(epochTime),longitude,latitude,event_id[0],relevancy,url))
         data.commit()
     else:
-        checkTweets(location,tweetBody,epochTime,longitude,latitude)
-
-test_file =open('exampleTweets.txt', 'r')
-n=0
-while n < 20:
-    tweetLocation = test_file.readline()[:-1]
-    tweetBody = test_file.readline()[:-1]
-    tweetTime= test_file.readline()[:-1]
-    checkEvents(tweetLocation,tweetBody,1443906368,0.0,0.0)
-    n+=1
+        checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url)
 
 
     
