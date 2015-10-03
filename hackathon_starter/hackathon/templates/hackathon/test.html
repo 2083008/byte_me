@@ -10,6 +10,8 @@
                     <li> <a href="{{ event.event }}"> {{ event.event }} </a> (<b>{{ event.occurances }}</b> occurance(s))</li>
 
                 {% endfor %}
+            {% else %}
+            <p>no events</p>
             {% endif %}
 
 

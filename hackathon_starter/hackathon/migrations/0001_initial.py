@@ -174,6 +174,7 @@ class Migration(migrations.Migration):
                 ('time', models.DateTimeField()),
                 ('latitude', models.DecimalField(max_digits=9, decimal_places=6)),
                 ('longitude', models.DecimalField(max_digits=9, decimal_places=6)),
+                ('url', models.CharField(max_length=150)),
                 ('event', models.ForeignKey(to='hackathon.Event')),
             ],
             options={

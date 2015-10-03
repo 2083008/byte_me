@@ -335,7 +335,7 @@ def event_to_id(event):
 def event(request, event):
     context = {}
     # test = get_object_or_404(event_id=event_to_id(event))
-    tweets = Tweet.objects.filter(event_id=event_to_id(event))
+    tweets = Tweet.objects.filter(event_id=event_to_id(event))[:15] # also sort by 
     print tweets
     context["tweets"] = tweets
     context["event"] = event
