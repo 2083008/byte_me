@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 	{% include 'hackathon/base.html' %}
-
+       
 	<body>
+		<div class="container">
 			<h1> {{ event }}'s </h1>
 
 			{% if tweets %}
@@ -15,6 +16,8 @@
 			<p>There are no tweets for this event<p>
 
 			{% endif %}
+
+		</div>
 	</body>
 
 </html>
