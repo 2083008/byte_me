@@ -18,6 +18,23 @@ class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
+class Tweet(models.Model):
+    postcode = models.CharField(max_length=10)
+    body = models.CharField(max_length=150)
+    time = models.DateTimeField()
+    event = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return unicode(self.event)
+
+class Event(models.Model):
+    postcode = models.CharField(max_length=10)
+    event = models.CharField(max_length=200)
+    occurances = models.IntegerField()
+
+    def __unicode__(self):
+        return unicode(self.event)
+
 class GithubProfile(models.Model):
     user = models.ForeignKey(User)
     github_user = models.CharField(max_length=200)

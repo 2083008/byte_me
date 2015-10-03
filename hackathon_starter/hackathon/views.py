@@ -40,7 +40,7 @@ import oauth2 as oauth
 import simplejson as json
 
 # Models
-from hackathon.models import Snippet, Profile, InstagramProfile, TwitterProfile, MeetupToken, GithubProfile, LinkedinProfile, FacebookProfile, TumblrProfile, GoogleProfile, DropboxProfile, FoursquareProfile
+from hackathon.models import Snippet, Profile, Event, Tweet, InstagramProfile, TwitterProfile, MeetupToken, GithubProfile, LinkedinProfile, FacebookProfile, TumblrProfile, GoogleProfile, DropboxProfile, FoursquareProfile
 from hackathon.serializers import SnippetSerializer
 from hackathon.forms import UserForm
 
@@ -315,9 +315,14 @@ def index(request):
     return render(request, 'hackathon/index.html', context)
 
 def test(request):
-
-    #twitter_info = db_name.objects.all()
     context = {}
+    #twitter_info = T.object.all()
+    #print twitter_info.
+    #twitter_info = db_name.objects.all()
+    tweet = Tweet.objects.all()
+    events = Event.objects.order_by('-occurances')[:10] # sort by descending occurences
+    context['tweets'] = tweet 
+    context['events'] = events
 
     return render(request, "hackathon/test.html", context)
 

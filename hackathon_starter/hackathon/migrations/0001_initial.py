@@ -26,6 +26,18 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Event',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('postcode', models.CharField(max_length=10)),
+                ('event', models.CharField(max_length=200)),
+                ('occurances', models.IntegerField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='FacebookProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -147,6 +159,19 @@ class Migration(migrations.Migration):
                 ('access_token', models.CharField(max_length=200)),
                 ('access_token_secret', models.CharField(max_length=200)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Tweets',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('postcode', models.CharField(max_length=10)),
+                ('body', models.CharField(max_length=150)),
+                ('time', models.DateTimeField()),
+                ('event', models.CharField(max_length=200)),
             ],
             options={
             },

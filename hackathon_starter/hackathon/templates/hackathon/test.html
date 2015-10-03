@@ -3,36 +3,50 @@
 	{% include 'hackathon/base.html' %}
 
 	<body>
+        <div class="col-sm-3 col-md-6 sidebar">
+          
+        </div>
 	<div class="container">
 		{% if user.is_authenticated %}
         	<h1>Recent Events</h1>
-        	<table class="table table-hover" id="tweet_table">
-        		<thead>
-        			<th> Location </th>
-        			<th> Incident </th>
-        			<th> Valid? </th>
-        		</thead>
-        		<tbody>
-        			<tr>
-        				<td> G4 </td>
-        				<td> There was a fire and a robbery </td>
-        				<td>
-	        				<button type="button" class="btn btn-success">Valid</button>
-                            <button type="button" class="btn btn-danger"
-                            onclick="deleteRow(this)">Invalid</button>
-	        			</td>
-        			</tr>
-        			<tr>
-        				<td> G19 </td>
-        				<td> There is a cat stuck up a tree </td>
-        				<td>
-                            <button type="button" class="btn btn-success">Valid</button>
-	        				<button type="button" class="btn btn-danger"
-                            onclick="deleteRow(this)">Invalid</button>
-	        			</td>
-        			</tr>
-        		</tbody>
-        	</table>
+            {% if events %}
+                {% for event in events %}
+                    <li> {{ event }} (<b>{{ event.occurances }}</b> occurance(s))</li>
+
+                {% endfor %}
+            {% endif %}
+
+
+            <h1>Recent Tweets</h1>
+            {% if tweets %}
+                <table class="table table-hover" id="tweet_table">
+                    <thead>
+                        <th> Postcode </th>
+                        <th> Tweet Body </th>
+                        <th> Incident </th>
+                        <th> Valid? </th>
+                    </thead>
+               
+                    <tbody> 
+                        {% for tweet in tweets %}
+                        <tr>
+                            <td> {{ tweet.postcode }} </td>
+                            <td> {{ tweet.body }}     </td>
+                            <td> {{ tweet.event }} </td> 
+                            <td>
+                                <button type="button" class="btn btn-success">Valid</button>
+                                <button type="button" class="btn btn-danger"
+                                onclick="deleteRow(this)">Invalid</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                
+            {% else %}
+                <p> no tweets </p>
+            {% endif %} 
 
         	<!-- for x in entries populate table but for now just create table
         -->
