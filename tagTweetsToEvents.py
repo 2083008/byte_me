@@ -1,11 +1,15 @@
-#Within the checkTweets and checkEvents functions a more thorough check should be carried out involving the amount of similarities and therefore chance of being identical
-
 import sqlite3
 import math
 import difflib
+import time
+
+EVENT_ID = 0
 
 data = sqlite3.connect('data.db')
 c=data.cursor()
+
+def convertTime(epochTime):
+    return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(epochTime))
 
 #Remove the redundant linking words of a tweet
 def splitTweet(tweet):
@@ -67,8 +71,11 @@ def checkLocation(location1,location2):
     return score
 
 def checkTime(time1,time2):
-    time1 = time1
-    time2 = time2
+    try:
+        time1 = int(time1)
+        time2 = int(time2)
+    except:
+        return 0
     if time1-time2 >0:
         difference = time1-time2
     else:
@@ -92,7 +99,7 @@ def areRelated(string1,string2):
 
 
 #check new tweet against the database of tweets to see if it is trending
-def checkTweets(location,tweetBody,time):
+def checkTweets(location,tweetBody,epochTime,longitude,latitude):
     tweet = splitTweet(tweetBody)
     #Get all tweets from the database
     c.execute("SELECT body from Tweet")
@@ -103,7 +110,6 @@ def checkTweets(location,tweetBody,time):
     #Get all times from database
     c.execute("SELECT time from Tweet")
     allTimes = c.fetchall()
-
     
     mostRelatedScore =0
     mostRelatedTweet =''
@@ -112,29 +118,32 @@ def checkTweets(location,tweetBody,time):
     for i in range(0,len(allTweets)):
         c.execute("SELECT event from Tweet WHERE body = (?)",(allTweets[i]))
         tweetEvent = c.fetchone()
-        if tweetEvent[0] == '':
+        if tweetEvent[0] == 0:
             oldTweet = splitTweet(allTweets[i][0])
             for string in oldTweet:
                 score = areRelated(string,tweetBody)
                 score += checkHashTags(string,tweetBody)
                 score += checkLocation(location,allPostcodes[i][0])
-                score += checkTime(time,allTimes[i][0])
+                score += checkTime(epochTime,allTimes[i][0])
                 if score>5 and score>mostRelatedScore:
                     mostRelatedScore = score
                     mostRelatedTweet = allTweets[i][0]
             if mostRelatedTweet != '':
-                c.execute("INSERT INTO Event VALUES(?,?,?,?)",(location,mostRelatedTweet,time,2))
-                c.execute("UPDATE Tweet SET event = (?) WHERE body = (?)",(mostRelatedTweet,mostRelatedTweet))
-                c.execute("INSERT INTO Tweet VALUES(?,?,?,?)",(location,tweetBody,time,mostRelatedTweet))
+                global EVENT_ID
+                EVENT_ID +=1
+                dateTime = convertTime(epochTime)
+                c.execute("INSERT INTO Event VALUES(?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2))
+                c.execute("UPDATE Tweet SET event = (?) WHERE body = (?)",(EVENT_ID,mostRelatedTweet))
+                c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID))
                 data.commit()
                 return
-    c.execute("INSERT INTO Tweet VALUES(?,?,?,?)",(location,tweetBody,time,''))
+    dateTime =convertTime(epochTime)
+    c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,0))
     data.commit()
         
                     
-
 #check new tweet against the database of events to see if it already exists in events
-def checkEvents(location,tweetBody,time):
+def checkEvents(location,tweetBody,epochTime,longitude,latitude):
     tweet = splitTweet(tweetBody)
     #collect all of the events from the database
     c.execute("SELECT event from Event")
@@ -152,17 +161,19 @@ def checkEvents(location,tweetBody,time):
         score = areRelated(string,tweetBody)
         score += checkHashTags(string,tweetBody)
         score += checkLocation(location,locations[i][0])
-        score += checkTime(time,times[i][0])
+        score += checkTime(epochTime,times[i][0])
         if score>5 and score>mostRelatedScore:
             mostRelatedScore = score
             mostRelatedString = string
 
     if mostRelatedString !='':
-        c.execute("UPDATE Event SET occurances = occurances + 1 WHERE event = ?", (mostRelatedString,))
-        c.execute("INSERT INTO Tweet VALUES(?,?,?,?)",(location,tweetBody,time,mostRelatedString))
+        c.execute("SELECT id from Event WHERE event = ?",(mostRelatedString,))
+        event_id = c.fetchone()
+        c.execute("UPDATE Event SET occurances = occurances + 1 WHERE id = ?",(event_id))
+        c.execute("INSERT INTO Tweet VALUES(?,?,?,?,?,?)",(location,tweetBody,convertTime(epochTime),longitude,latitude,event_id[0]))
         data.commit()
     else:
-        checkTweets(location,tweetBody,time)
+        checkTweets(location,tweetBody,epochTime,longitude,latitude)
 
 test_file =open('exampleTweets.txt', 'r')
 n=0
@@ -170,7 +181,7 @@ while n < 20:
     tweetLocation = test_file.readline()[:-1]
     tweetBody = test_file.readline()[:-1]
     tweetTime= test_file.readline()[:-1]
-    checkEvents(tweetLocation,tweetBody,tweetTime)
+    checkEvents(tweetLocation,tweetBody,1443906368,0.0,0.0)
     n+=1
 
 
