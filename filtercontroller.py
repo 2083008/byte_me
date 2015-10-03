@@ -15,13 +15,14 @@ def update_all_relevancies():
 
 def add_tweet(tweet):
     tf.tweet_to_relevance_table(tweet)
-    update_all_relevancies()
     tr = tweet_relevancy(tweet)
     ttte.checkTweets(tweet[3], tweet[0], tweet[2], tweet[1][1], tweet[1][0], tr, tweet[4])
     
 
 def mark_irrelevant(tweet):
     tf.update_relevancy(tweet, false)
+    update_all_relevancies()
 
 def mark_relevant(tweet):
     tf.update_relevancy(tweet, true)
+    update_all_relevancies()
