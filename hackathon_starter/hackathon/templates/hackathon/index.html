@@ -6,9 +6,8 @@
     <body>
     <div class="container">
     	<h1>Team Byte_Me</h1>
-    	{% if user.is_authenticated %}
-        	
-        	<strong>{{ boldmessage }}</strong><br />
+    	{% if user.is_authenticated %}	
+        	<strong>{{ boldmessage }}</strong><br/>
         {% else %}
         	<h1> Please register/login! </h1>
         {% endif %}
