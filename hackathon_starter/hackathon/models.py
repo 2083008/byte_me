@@ -18,19 +18,22 @@ class Profile(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
-class Tweet(models.Model):
+class Event(models.Model):
     postcode = models.CharField(max_length=10)
-    body = models.CharField(max_length=150)
-    time = models.DateTimeField()
     event = models.CharField(max_length=200)
+    time = models.DateTimeField()
+    occurances = models.IntegerField()
 
     def __unicode__(self):
         return unicode(self.event)
 
-class Event(models.Model):
+class Tweet(models.Model):
     postcode = models.CharField(max_length=10)
-    event = models.CharField(max_length=200)
-    occurances = models.IntegerField()
+    body = models.CharField(max_length=150)
+    time = models.DateTimeField()
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    event = models.ForeignKey(Event)
 
     def __unicode__(self):
         return unicode(self.event)

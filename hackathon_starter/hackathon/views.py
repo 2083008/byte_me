@@ -326,6 +326,19 @@ def test(request):
 
     return render(request, "hackathon/test.html", context)
 
+def event_to_id(event):
+    event = Event.objects.get(event=event)
+    return event.id
+
+def event(request, event):
+    print event, event_to_id(event)
+    context = {}
+    tweets = Tweet.objects.filter(event_id=event_to_id(event))
+    print tweets
+    context["tweets"] = tweets
+    context["event"] = event
+    return render(request, "hackathon/event.html", context)
+
 ##################
 #  API Examples  #
 ##################

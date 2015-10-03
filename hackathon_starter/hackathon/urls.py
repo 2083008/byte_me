@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^api/$', views.api_examples, name='api'),
     url(r'^test/$', views.test, name='test'), # added test page for tweet outputd
+    url(r'^test/(?P<event>[\w\-]+)/$', views.event, name='event'),
     url(r'^steam/$', views.steam, name='steam'),
     url(r'^steamDiscountedGames/$', views.steamDiscountedGames, name='steamDiscountedGames'),
     url(r'^githubResume/$', views.githubResume, name='githubResume'),

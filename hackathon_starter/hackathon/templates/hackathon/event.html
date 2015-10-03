@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	{% include 'hackathon/base.html' %}
+
+	<body>
+			<h1> {{ event }}'s </h1>
+
+			{% if tweets %}
+				{% for tweet in tweets %}
+					<li>{{ tweet.body }} + {{ tweet.latitude }}</li>
+
+				{% endfor %}
+			{% else %}
+
+			<p>There are no tweets for this event<p>
+
+			{% endif %}
+	</body>
+
+</html>

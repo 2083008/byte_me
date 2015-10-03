@@ -31,6 +31,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('postcode', models.CharField(max_length=10)),
                 ('event', models.CharField(max_length=200)),
+                ('time', models.DateTimeField()),
                 ('occurances', models.IntegerField()),
             ],
             options={
@@ -165,13 +166,15 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Tweets',
+            name='Tweet',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('postcode', models.CharField(max_length=10)),
                 ('body', models.CharField(max_length=150)),
                 ('time', models.DateTimeField()),
-                ('event', models.CharField(max_length=200)),
+                ('latitude', models.DecimalField(max_digits=9, decimal_places=6)),
+                ('longitude', models.DecimalField(max_digits=9, decimal_places=6)),
+                ('event', models.ForeignKey(to='hackathon.Event')),
             ],
             options={
             },
