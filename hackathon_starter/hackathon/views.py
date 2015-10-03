@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 
 # Django REST Framework
 from rest_framework import viewsets, mixins
@@ -331,8 +333,8 @@ def event_to_id(event):
     return event.id
 
 def event(request, event):
-    print event, event_to_id(event)
     context = {}
+    # test = get_object_or_404(event_id=event_to_id(event))
     tweets = Tweet.objects.filter(event_id=event_to_id(event))
     print tweets
     context["tweets"] = tweets

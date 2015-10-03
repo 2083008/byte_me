@@ -8,7 +8,7 @@
 
 			{% if tweets %}
 				{% for tweet in tweets %}
-					<li>{{ tweet.body }} + {{ tweet.latitude }}</li>
+					<li>{{ tweet.body }} + {{ tweet.time }}</li>
 
 				{% endfor %}
 			{% else %}
