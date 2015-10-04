@@ -129,12 +129,11 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
                     mostRelatedScore = score
                     mostRelatedTweet = allTweets[i][0]
             if mostRelatedTweet != '':
-                global EVENT_ID
-                EVENT_ID +=1
                 dateTime = convertTime(epochTime)
-                c.execute("INSERT INTO hackathon_event (id,postcode,event,time,occurences)VALUES(?,?,?,?,?)",(EVENT_ID,location,mostRelatedTweet,dateTime,2))
-                c.execute("UPDATE hackathon_tweet SET event_id = (?) WHERE body = (?)",(EVENT_ID,mostRelatedTweet))
-                c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,EVENT_ID,relevancy,url))
+                c.execute("INSERT INTO hackathon_event (id,postcode,event,time,occurences)VALUES(?,?,?,?,?)",(null,location,mostRelatedTweet,dateTime,2))
+                event_id = c.lastrowid
+                c.execute("UPDATE hackathon_tweet SET event_id = (?) WHERE body = (?)",(event_id,mostRelatedTweet))
+                c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,event_id,relevancy,url))
                 data.commit()
                 return
     dateTime =convertTime(epochTime)
