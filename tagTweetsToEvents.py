@@ -15,7 +15,7 @@ def convertTime(epochTime):
 def splitTweet(tweet):
     redundantWords = ['and', 'in', 'addition', 'as', 'well', 'as', 'the', 'my','who','do',
                         'also', 'aoo', 'furthermore', 'moreover', 'of', 'is','be','you','that'
-                        'apart', 'from', 'so', 'to', 'besides', 'a', 'I', 'am','are','like'
+                        'apart', 'from', 'so', 'to', 'besides', 'a', 'I', 'am','are','like',
                       ',','!']
     words = tweet.split()
     for word in words:
@@ -56,15 +56,20 @@ def checkHashTags(string1,string2):
             for word2 in string2:
                 if word2[0] == '#':
                     if word[1:].lower() == word2[1:].lower():
-                        score += 7
+                        score += 15
                     else:
                         score += containsForHashTags(word[1:].lower(),word2[1:].lower())
     return score
 
 def checkLocation(location1,location2):
     score = 0
-    if location1 == location2:
-        score += 5
+    if location1 == location2 and (len(location1) >3 or len(location2)>3):
+        return 20
+
+    location1 = location1.split()
+    location2= location2.split()
+    if location1[0] == location2[0]:
+        score+=5
     else:
         try:
             if (int(location2[1:]) - int(location1[1:])) <2 or (int(location2[1:])-int(location1[1:]) < 2):
@@ -95,9 +100,9 @@ def areRelated(string1,string2):
     for word in string1:
         for word2 in string2:
             if word.lower() == word2.lower():
-                score+=6
+                score+=10
             if contains(word.lower(),word2.lower()):
-                score +=4
+                score +=6
     return score
 
 
@@ -128,7 +133,7 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
                 score += checkHashTags(string,tweetBody)
                 score += checkLocation(location,allPostcodes[i][0])
                 score += checkTime(epochTime,allTimes[i][0])
-                if score>5 and score>mostRelatedScore:
+                if score>15 and score>mostRelatedScore:
                     mostRelatedScore = score
                     mostRelatedTweet = allTweets[i][0]
             if mostRelatedTweet != '':
@@ -146,6 +151,9 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
                     
 #check new tweet against the database of events to see if it already exists in events
 def checkEvents(location,tweetBody,epochTime,longitude,latitude, relevancy,url):
+    print location
+    if type(location) == list:
+            location = location[0]
     tweet = splitTweet(tweetBody)
     #collect all of the events from the database
     c.execute("SELECT event from hackathon_event")
@@ -164,7 +172,7 @@ def checkEvents(location,tweetBody,epochTime,longitude,latitude, relevancy,url):
         score += checkHashTags(string,tweetBody)
         score += checkLocation(location,locations[i][0])
         score += checkTime(epochTime,times[i][0])
-        if score>5 and score>mostRelatedScore:
+        if score>15 and score>mostRelatedScore:
             mostRelatedScore = score
             mostRelatedString = string
 
@@ -177,5 +185,4 @@ def checkEvents(location,tweetBody,epochTime,longitude,latitude, relevancy,url):
     else:
         checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url)
 
-checkEvents("g4","asdfjkasdflkj", 123434534, 2131.123,23423,0.5,"asdfasdf")
     
