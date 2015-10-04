@@ -10,6 +10,8 @@ import sys
 import pickle
 from urllib import urlopen
 from stripogram import html2text
+import filtercontroller
+
 api = TwitterAPI("jt9lHyz5rkanAMG7Z4AQKTEg5", 
                  "xpw3BqaIO45jMMSQSyDRuYSzKTvOkevoTwUB7iDIaT7p4xVZru", 
                  "131952295-lgmR5htQiEBN9dsbjQ9xoZj5rn0eLdqIFMf0ap97", 
@@ -220,5 +222,5 @@ def mainThread():
         print tweetFull
         print "\n\n\n"
         ## Continue at this indentation to work on current tweet
-
+        filtercontroller.add_tweet(tweetFull)
 mainThread()
