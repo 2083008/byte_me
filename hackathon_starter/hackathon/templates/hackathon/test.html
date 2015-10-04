@@ -17,7 +17,7 @@
 
             <h1>Recent Tweets</h1>
             {% if tweets %}
-                <table class="table table-hover" id="tweet_table">
+                <table class="table table-hover" id="recent_table">
                     <thead>
                         <th> Postcode </th>
                         <th> Tweet Body </th>
@@ -88,7 +88,7 @@
 <script>
 function deleteRow(r) {
     var i = r.parentNode.parentNode.rowIndex;
-    document.getElementById("tweet_table").deleteRow(i);
+    document.getElementById("recent_table").deleteRow(i);
 }
 </script>
 	</body>
