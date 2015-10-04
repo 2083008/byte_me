@@ -17,7 +17,7 @@
 
             <h1>Recent Tweets</h1>
             {% if tweets %}
-                <table class="table table-hover" id="tweet_table">
+                <table class="table table-hover" id="recent_table">
                     <thead>
                         <th> Postcode </th>
                         <th> Tweet Body </th>
@@ -32,7 +32,7 @@
                             <td> {{ tweet.body }}     </td>
                             <td> {{ tweet.event }} </td> 
                             <td>
-                                <button type="button" class="btn btn-success">Valid</button>
+                                <button type="button" class="btn btn-success" onclick="deleteRow(this)">Valid</button>
                                 <button type="button" class="btn btn-danger"
                                 onclick="deleteRow(this)">Invalid</button>
                             </td>
@@ -46,6 +46,38 @@
                 <p> no tweets </p>
             {% endif %} 
 
+            <h1>Most Relevant Tweets</h1>
+            {% if relevant_tweets %}
+                <table class="table table-hover" id="tweet_table">
+                    <thead>
+                        <th> Postcode </th>
+                        <th> Tweet Body </th>
+                        <th> Incident </th>
+                        <th> Valid? </th>
+                    </thead>
+               
+                    <tbody> 
+                        {% for tweet in relevant_tweets %}
+                        <tr>
+                            <td> {{ tweet.postcode }} </td>
+                            <td> {{ tweet.body }}     </td>
+                            <td> {{ tweet.event }} </td> 
+                            <td>
+                                <button type="button" class="btn btn-success" onclick="deleteRow(this)">Valid</button>
+                                <button type="button" class="btn btn-danger"
+                                onclick="deleteRow(this)">Invalid</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                
+            {% else %}
+                <p> no tweets </p>
+            {% endif %} 
+
+
         	<!-- for x in entries populate table but for now just create table
         -->
         {% else %}
@@ -56,7 +88,7 @@
 <script>
 function deleteRow(r) {
     var i = r.parentNode.parentNode.rowIndex;
-    document.getElementById("tweet_table").deleteRow(i);
+    document.getElementById("recent_table").deleteRow(i);
 }
 </script>
 	</body>

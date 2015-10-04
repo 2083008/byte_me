@@ -7,15 +7,21 @@ import requests
 import difflib
 import nltk
 import sys
+import time
 import pickle
 from urllib import urlopen
 from stripogram import html2text
 import filtercontroller
 
-api = TwitterAPI("jt9lHyz5rkanAMG7Z4AQKTEg5", 
-                 "xpw3BqaIO45jMMSQSyDRuYSzKTvOkevoTwUB7iDIaT7p4xVZru", 
-                 "131952295-lgmR5htQiEBN9dsbjQ9xoZj5rn0eLdqIFMf0ap97", 
-                 "iGm1CY0eOnlDjohmj7iBLYz52cp0nYuSCn4lukjo6NrzP")
+while 1:
+    try:
+        api = TwitterAPI("jt9lHyz5rkanAMG7Z4AQKTEg5", 
+                         "xpw3BqaIO45jMMSQSyDRuYSzKTvOkevoTwUB7iDIaT7p4xVZru", 
+                         "131952295-lgmR5htQiEBN9dsbjQ9xoZj5rn0eLdqIFMf0ap97", 
+                         "iGm1CY0eOnlDjohmj7iBLYz52cp0nYuSCn4lukjo6NrzP")
+        break
+    except:
+        continue
 split = []
 places = {}
 placesData = {}
@@ -161,13 +167,16 @@ def mainThread():
     postCodes = postBoxes()
     dictionary = {}
     pos = 0
+    print "Connecting..."
     while 1:
         try:
             tweetsFromGlasgow = api.request('statuses/filter', {'locations':'-4.487958,55.759649,-3.992752,55.973084'})
+            print 'Connected to Twitter\nWaiting for tweets.'
             break
         except:
             continue
     for tweet in tweetsFromGlasgow:
+        print "Tweet Captured, processing..."
         loc = boxToCentre(tweet["place"]["bounding_box"]["coordinates"][0])
         tweetFull = [tweet["text"].encode('ascii','ignore'),loc,float(tweet["timestamp_ms"])]
         postcodelist = []
@@ -218,9 +227,14 @@ def mainThread():
                 accurate = False
                 tweetFull = tweetFull + [postcodelist] + ['https://twitter.com/statuses/'+str(tweet['id_str'].encode('ascii','ignore'))] + [[[accurate],['']]]      ## print dictionary
         else:
+            print "Irrelevant, postcode does not start with G\n"
+            print "Waiting for new tweet"
             continue
+        
         print tweetFull
         print "\n\n\n"
+        print "Waiting for new tweet"
         ## Continue at this indentation to work on current tweet
         filtercontroller.add_tweet(tweetFull)
+        
 mainThread()
