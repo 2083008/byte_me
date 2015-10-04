@@ -6,13 +6,16 @@ conn = sqlite3.connect("hackathon_starter/db.sqlite3")
 c = conn.cursor()
 
 def update_all_relevancies():
-    c.execute('''SELECT body, url FROM hackathon_tweet''')
-    tweets = c.fetchall()
+    upconn = sqlite3.connect("hackathon_starter/db.sqlite3")
+    uc = upconn.cursor()
+    uc.execute('''SELECT body, url FROM hackathon_tweet''')
+    tweets = uc.fetchall()
     for tweet in tweets:
         tr = tf.tweet_relevancy(tweet)
-        c.execute('''UPDATE hackathon_tweet SET relevancy = ? WHERE url = ?;''', tr, tweet[1])
+        uc.execute('''UPDATE hackathon_tweet SET relevancy = ? WHERE url = ?;''', tr, tweet[1])
         
-    conn.commit()
+    upconn.commit()
+    upconn.close()
 
 def add_tweet(tweet):
     tf.tweet_to_relevance_table(tweet)
