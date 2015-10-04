@@ -7,7 +7,7 @@
         	<h1>Recent Events</h1>
             {% if events %}
                 {% for event in events %}
-                    <li> <a href="{{ event.event }}"> {{ event.event }} </a> (<b>{{ event.occurances }}</b> occurance(s))</li>
+                    <li> <a href="{{ event.event }}"> {{ event.event }} </a> (<b>{{ event.occurences }}</b> occurence(s))</li>
 
                 {% endfor %}
             {% else %}
