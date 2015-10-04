@@ -321,8 +321,8 @@ def test(request):
     #twitter_info = T.object.all()
     #print twitter_info.
     #twitter_info = db_name.objects.all()
-    tweet = Tweet.objects.all()
-    events = Event.objects.order_by('-occurances')[:10] # sort by descending occurences
+    tweet = Tweet.objects.all().order_by("-time")[:10]
+    events = sorted(Event.objects.all())[:10] # sort by descending occurences
     context['tweets'] = tweet 
     context['events'] = events
 
