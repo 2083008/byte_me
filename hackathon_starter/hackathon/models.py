@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -23,6 +24,11 @@ class Event(models.Model):
     event = models.CharField(max_length=200)
     time = models.DateTimeField()
     occurences = models.IntegerField()
+    
+    slug = models.SlugField(unique=True)
+    
+    def save(self,*args,**Kwargs):
+        self.slug = slugify(self.event)[10:]
 
     def __unicode__(self):
         return unicode(self.event)

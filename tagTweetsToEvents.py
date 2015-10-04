@@ -8,6 +8,18 @@ EVENT_ID = 0
 data = sqlite3.connect('hackathon_starter/db.sqlite3')
 c=data.cursor()
 
+def createSlug(string):
+    disallowed = " !$%&*()+={[}]:;@~#?/,"
+    slugString =''
+    i=14
+    for character in string:
+        if character not in disallowed:
+            slugString+=character
+            i-=1
+        if i ==0:
+            break
+    return slugString
+
 def convertTime(epochTime):
     return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(epochTime))
 
@@ -138,7 +150,7 @@ def checkTweets(location,tweetBody,epochTime,longitude,latitude,relevancy,url):
                     mostRelatedTweet = allTweets[i][0]
             if mostRelatedTweet != '':
                 dateTime = convertTime(epochTime)
-                c.execute("INSERT INTO hackathon_event (id,postcode,event,time,occurences)VALUES(NULL,?,?,?,?)",(location,mostRelatedTweet,dateTime,2))
+                c.execute("INSERT INTO hackathon_event (id,postcode,event,time,occurences,slug)VALUES(NULL,?,?,?,?,?)",(location,mostRelatedTweet,dateTime,2,createSlug(mostRelatedTweet)))
                 event_id = c.lastrowid
                 c.execute("UPDATE hackathon_tweet SET event_id = (?) WHERE body = (?)",(event_id,mostRelatedTweet))
                 c.execute("INSERT INTO hackathon_tweet (postcode,body,time,longitude,latitude,event_id,relevancy,url) VALUES(?,?,?,?,?,?,?,?)",(location,tweetBody,dateTime,longitude,latitude,event_id,relevancy,url))
