@@ -11,7 +11,7 @@ import time
 import pickle
 from urllib import urlopen
 from stripogram import html2text
-##import filtercontroller
+import filtercontroller
 
 while 1:
     try:
@@ -175,77 +175,66 @@ def mainThread():
             break
         except:
             continue
-    while 1:
-        try:
-            for tweet in tweetsFromGlasgow:
-                print "Tweet Captured, processing..."
-                loc = boxToCentre(tweet["place"]["bounding_box"]["coordinates"][0])
-                tweetFull = [tweet["text"].encode('ascii','ignore'),loc,float(tweet["timestamp_ms"])]
-                postcodelist = []
+    for tweet in tweetsFromGlasgow:
+        print "Tweet Captured, processing..."
+        loc = boxToCentre(tweet["place"]["bounding_box"]["coordinates"][0])
+        tweetFull = [tweet["text"].encode('ascii','ignore'),loc,float(tweet["timestamp_ms"])]
+        postcodelist = []
+        accurate = False
+        constructed = False
+##        for item in postCodes:
+##            lonL = postCodes[item][0][0]
+##            lonH = postCodes[item][0][1]
+##            latL = postCodes[item][1][0]
+##            latH = postCodes[item][1][1]
+##            if loc[0] > lonL:
+##                if loc[0] < lonH:
+##                    if loc[1] > latL:
+##                        if loc[1] < latH:
+##                            try:
+##                                if item not in postcodelist:
+##                                    postcodelist += [item]                                
+##                                dictionary[item] += [tweetFull]
+##                            except:
+##                                if item not in postcodelist:
+##                                    postcodelist += [item]
+##                                dictionary[item] = [tweetFull]
+##                                continue
+        gmaps = googlemaps.Client(key='AIzaSyD081cPrBCVqJGvEyEuvRyjtebmN3hw5wI')
+        reverse_geocode_result = gmaps.reverse_geocode((loc[0],loc[1]))[0]['formatted_address']
+        relevant = reverse_geocode_result.split(',')[-2:-1]
+        relevantSplit = relevant[0].split()
+        mostLikelyPostCode = ''
+        relevantSplit
+        for item in relevantSplit:
+            section = ''
+            for character in item:
+                if character in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':
+                    section += character
+            if len(section) == len(item):
+                mostLikelyPostCode += str(section)
+                break
+        postcodelist = mostLikelyPostCode
+        accLoc = tweetLocationFromText(tweetFull[0])
+        if accLoc != "abcdefg123":
+            accurate = True
+            tweetFull[1] = nameToCoords(accLoc)
+            tweetFull += [[accLoc]] + ['https://twitter.com/statuses/'+str(tweet['id_str'].encode('ascii','ignore'))] +[[[accurate],[placeMentionned]]]
+            placeMentionned = ''
+            constructed = True
+        if postcodelist[0][0] == "G":
+            if constructed == False:
                 accurate = False
-                constructed = False
-        ##        for item in postCodes:
-        ##            lonL = postCodes[item][0][0]
-        ##            lonH = postCodes[item][0][1]
-        ##            latL = postCodes[item][1][0]
-        ##            latH = postCodes[item][1][1]
-        ##            if loc[0] > lonL:
-        ##                if loc[0] < lonH:
-        ##                    if loc[1] > latL:
-        ##                        if loc[1] < latH:
-        ##                            try:
-        ##                                if item not in postcodelist:
-        ##                                    postcodelist += [item]                                
-        ##                                dictionary[item] += [tweetFull]
-        ##                            except:
-        ##                                if item not in postcodelist:
-        ##                                    postcodelist += [item]
-        ##                                dictionary[item] = [tweetFull]
-        ##                                continue
-                gmaps = googlemaps.Client(key='AIzaSyD081cPrBCVqJGvEyEuvRyjtebmN3hw5wI')
-                reverse_geocode_result = gmaps.reverse_geocode((loc[0],loc[1]))[0]['formatted_address']
-                relevant = reverse_geocode_result.split(',')[-2:-1]
-                relevantSplit = relevant[0].split()
-                mostLikelyPostCode = ''
-                relevantSplit
-                for item in relevantSplit:
-                    section = ''
-                    for character in item:
-                        if character in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':
-                            section += character
-                    if len(section) == len(item):
-                        mostLikelyPostCode += str(section)
-                        break
-                postcodelist = mostLikelyPostCode
-                accLoc = tweetLocationFromText(tweetFull[0])
-                if accLoc != "abcdefg123":
-                    accurate = True
-                    tweetFull[1] = nameToCoords(accLoc)
-                    tweetFull += [[accLoc]] + ['https://twitter.com/statuses/'+str(tweet['id_str'].encode('ascii','ignore'))] +[[[accurate],[placeMentionned]]]
-                    placeMentionned = ''
-                    constructed = True
-                if postcodelist[0][0] == "G":
-                    if constructed == False:
-                        accurate = False
-                        tweetFull = tweetFull + [postcodelist] + ['https://twitter.com/statuses/'+str(tweet['id_str'].encode('ascii','ignore'))] + [[[accurate],['']]]      ## print dictionary
-                else:
-                    print "Irrelevant, postcode does not start with G\n"
-                    print "Waiting for new tweet"
-                    continue
-                
-                print tweetFull
-                print "\n\n\n"
-                print "Waiting for new tweet"
-        ## Continue at this indentation to work on current tweet
-        ##filtercontroller.add_tweet(tweetFull)
-        
-        except:
-            print"\nConnection failed, retrying in 5 seconds...\n"
-            api = TwitterAPI("jt9lHyz5rkanAMG7Z4AQKTEg5", 
-                 "xpw3BqaIO45jMMSQSyDRuYSzKTvOkevoTwUB7iDIaT7p4xVZru", 
-                 "131952295-lgmR5htQiEBN9dsbjQ9xoZj5rn0eLdqIFMf0ap97", 
-                 "iGm1CY0eOnlDjohmj7iBLYz52cp0nYuSCn4lukjo6NrzP")
-            tweetsFromGlasgow = api.request('statuses/filter', {'locations':'-4.487958,55.759649,-3.992752,55.973084'})
-            time.sleep(4)
+                tweetFull = tweetFull + [postcodelist] + ['https://twitter.com/statuses/'+str(tweet['id_str'].encode('ascii','ignore'))] + [[[accurate],['']]]      ## print dictionary
+        else:
+            print "Irrelevant, postcode does not start with G\n"
+            print "Waiting for new tweet"
             continue
+        
+        print tweetFull
+        print "\n\n\n"
+        print "Waiting for new tweet"
+        ## Continue at this indentation to work on current tweet
+        filtercontroller.add_tweet(tweetFull)
+        
 mainThread()
