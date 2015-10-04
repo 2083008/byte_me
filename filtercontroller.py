@@ -19,10 +19,14 @@ def add_tweet(tweet):
     ttte.checkTweets(tweet[3], tweet[0], tweet[2], tweet[1][1], tweet[1][0], tr, tweet[4])
     
 
-def mark_irrelevant(tweet):
+def mark_irrelevant(tweet_url):
+    c.execute('''SELECT * FROM Tweet WHERE url = ?''', tweet_url)
+    tweet = c.fetchone()
     tf.update_relevancy(tweet, false)
     update_all_relevancies()
 
-def mark_relevant(tweet):
+def mark_relevant(tweet_url):
+    c.execute('''SELECT * FROM Tweet WHERE url = ?''', tweet_url)
+    tweet = c.fetchone()
     tf.update_relevancy(tweet, true)
     update_all_relevancies()
