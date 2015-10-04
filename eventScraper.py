@@ -25,9 +25,22 @@ def singlePageScrape(no):
             while found == False:
                 if (page_source[x] == '<' and page_source[x+1] == '/' and page_source[x+2] == 's'):
                     end = x
-                    print page_source[start:end]
+                    line = page_source[start:end]
                     found = True
                     x+=1
+                    haystack = line
+                    if haystack.find("title") >= 0:
+                        titleOn = haystack[haystack.find("title"):]
+                        haystack = titleOn
+                        if haystack.find(',') >= 0:
+                            eventTitle = haystack[7:haystack.find(',')]
+                            haystack = eventTitle
+                            if haystack.find(':') >= 0:
+                                eventTitle = eventTitle[:haystack.find(':')]
+                            print eventTitle
+                    else:
+                        continue
+
                 else:
                     x=x+1
         else:
