@@ -332,11 +332,11 @@ def event_to_id(event):
     event = Event.objects.get(event=event)
     return event.id
 
-def event(request, event):
+def event(request, slug):
     context = {}
+    event=Event.objects.get(slug=slug)
     # test = get_object_or_404(event_id=event_to_id(event))
     tweets = Tweet.objects.filter(event_id=event_to_id(event))[:15] # also sort by 
-    print tweets
     context["tweets"] = tweets
     context["event"] = event
     return render(request, "hackathon/event.html", context)
