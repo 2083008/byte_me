@@ -10,7 +10,7 @@ def update_all_relevancies():
     tweets = c.fetchall()
     for tweet in tweets:
         tr = tf.tweet_relevancy(tweet)
-        c.execute('''UPDATE hackathon_tweet SET relevancy = ''' + tr + ''' WHERE url = "''' + tweet[4] + '''";''')
+        c.execute('''UPDATE hackathon_tweet SET relevancy = ? WHERE url = ?;''', tr, tweet[1])
         
     conn.commit()
 
