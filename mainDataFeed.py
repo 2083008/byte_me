@@ -5,7 +5,9 @@ from lxml import html
 import HTMLParser
 import requests
 import difflib
-import nltk   
+import nltk
+import sys
+import pickle
 from urllib import urlopen
 from stripogram import html2text
 api = TwitterAPI("jt9lHyz5rkanAMG7Z4AQKTEg5", 
@@ -23,25 +25,28 @@ officerGPS['Paul'] = [55.80527978,-4.0248262]
 officerGPS['Tom'] = [55.89574027,-4.22762588]
 officerGPS['Mike'] = [55.77021703,-4.06350479]
 officerGPS['Allan'] = [55.87150646,-4.42722515]
+    
 
-
-def singlePageScrape(no):
-    global places
-    h = HTMLParser.HTMLParser()
-    page = requests.get('https://www.list.co.uk/places/location:Glasgow(55.8621,-4.2465)/distance:10/page:' + no + "/#results'")
-    tree = html.fromstring(page.text)
-    buyers = tree.xpath('//h2[@class="head"]/text()')
-    prices = tree.xpath('//span[@class="postal-code"]/text()')
-    count = 0
-    for item in buyers:
-        places[item] = html2text(prices[count]).encode('ascii','ignore')
-        count += 1
-
+##def singlePageScrape(no):
+##    global places
+##    h = HTMLParser.HTMLParser()
+##    page = requests.get('https://www.list.co.uk/places/location:Glasgow(55.8621,-4.2465)/distance:10/page:' + no + "/#results'")
+##    tree = html.fromstring(page.text)
+##    buyers = tree.xpath('//h2[@class="head"]/text()')
+##    prices = tree.xpath('//span[@class="postal-code"]/text()')
+##    count = 0
+##    for item in buyers:
+##        places[item] = html2text(prices[count]).encode('ascii','ignore')
+##        count += 1
+##
 def multiScrape():  ##Returns dictionary, places, {University of Glasgow:G234HJ,Place:postcode}
-    no = 1
-    while no < 41:
-        singlePageScrape(str(no))
-        no += 1
+    global places
+    f = open('locations')
+    lines = f.readlines()
+    x = 0
+    while x < len(lines):
+        places[lines[x][:-1]] = lines[x+1][:-1]
+        x+=2
     return places
 
 def degToRad(deg):
